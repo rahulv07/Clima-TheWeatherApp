@@ -1,3 +1,5 @@
+import 'package:clima/utilities/beziercurve.dart';
+import 'package:clima/utilities/weather_component.dart';
 import 'package:flutter/material.dart';
 
 class NewHome extends StatefulWidget {
@@ -13,8 +15,8 @@ class _NewHomeState extends State<NewHome> {
   int deg = 0x00B0;
   String cityName, countryCode;
   String weatherIcon;
+  String condition;
   String weatherText;
-  int condition;
   int pressure, humidity, wind;
 
   @override
@@ -27,7 +29,7 @@ class _NewHomeState extends State<NewHome> {
     setState(() {
       if (weatherData == null) {
         temperature = 0;
-        condition = 0;
+        condition = '';
         cityName = '';
         countryCode = '';
         wind = 0;
@@ -35,14 +37,45 @@ class _NewHomeState extends State<NewHome> {
         pressure = 0;
       } else {
         temperature = double.parse(weatherData['main']['temp'].toString());
-        condition = weatherData['weather'][0]['id'].toInt();
+        condition = weatherData['weather'][0]['icon'].toString();
         cityName = weatherData['name'].toString();
         countryCode = weatherData['sys']['country'].toString();
         wind = weatherData['wind']['speed'].toInt();
         humidity = weatherData['main']['humidity'].toInt();
         pressure = weatherData['main']['pressure'].toInt();
+        weatherIcon = updateWeatherIcon(condition);
       }
     });
+  }
+
+  String updateWeatherIcon(String condition) {
+    String output;
+
+    if (condition == '01d')
+      output = 'sun.png';
+    else if (condition == '01n')
+      output = 'night.png';
+    else if (condition == '02d')
+      output = 'cloudy-day.png';
+    else if (condition == '02n')
+      output = 'cloudy-night.png';
+    else if (condition == '03d' ||
+        condition == '03n' ||
+        condition == '04d' ||
+        condition == '04n')
+      output = 'cloud.png';
+    else if (condition == '09d' ||
+        condition == '09n' ||
+        condition == '10d' ||
+        condition == '10n')
+      output = 'cloud+rain.png';
+    else if (condition == '11d' || condition == '11n')
+      output = 'storm.png';
+    else if (condition == '13d' || condition == '13n')
+      output = 'snowing.png';
+    else if (condition == '50d' || condition == '50n') output = 'mist.png';
+
+    return output;
   }
 
   @override
@@ -87,7 +120,7 @@ class _NewHomeState extends State<NewHome> {
             ),
             Container(
               height: screenHeight * 0.32,
-              child: Icon(Icons.cloud, size: 200),
+              child: Image.asset('assets/' + weatherIcon),
             ),
             Expanded(
               child: ClipPath(
@@ -101,20 +134,50 @@ class _NewHomeState extends State<NewHome> {
                     ),
                   ),
                   height: screenHeight * 0.38,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      WeatherComponent(
-                          component: 'Wind', value: wind, icon: Icons.air),
-                      WeatherComponent(
-                          component: 'Humidity',
-                          value: humidity,
-                          icon: Icons.water),
-                      WeatherComponent(
-                          component: 'Pressure',
-                          value: pressure,
-                          icon: Icons.lock_clock),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          WeatherComponent(
+                            component: 'Wind',
+                            value: wind,
+                            icon: 'wind.png',
+                            unit: ' kmph',
+                          ),
+                          WeatherComponent(
+                            component: 'Humidity',
+                            value: humidity,
+                            icon: 'humidity.png',
+                            unit: '%',
+                          ),
+                          WeatherComponent(
+                            component: 'Pressure',
+                            value: pressure ~/ 10,
+                            icon: 'pressure.png',
+                            unit: ' kPa',
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 50, bottom: 50),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                                onPressed: () {},
+                                child: Icon(Icons.location_on)),
+                            ElevatedButton(
+                              onPressed: () {},
+                              child: Icon(Icons.search),
+                            )
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -124,77 +187,5 @@ class _NewHomeState extends State<NewHome> {
         ),
       ),
     );
-  }
-}
-
-class WeatherComponent extends StatelessWidget {
-  final IconData icon;
-  final int value;
-  final String component;
-  WeatherComponent({this.component, this.value, this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Color(0xFF212E50),
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.all(
-          Radius.circular(20),
-        ),
-      ),
-      height: 110,
-      width: 95,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(icon, size: 30),
-          Text(
-            value.round().toString(),
-            style: TextStyle(
-              fontSize: 20,
-              color: Color(0xFF95a0b0),
-            ),
-          ),
-          Text(
-            component,
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class BezierCurve extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    var path = Path();
-    path.moveTo(0.0, size.height);
-    path.lineTo(0.0, size.height / 5);
-
-    var firstControlPoint = new Offset(size.width / 4, size.height / 8);
-    var firstEndPoint = new Offset(size.width / 2, size.height / 4);
-    path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy,
-        firstEndPoint.dx, firstEndPoint.dy);
-
-    var secondControlPoint = new Offset(size.width * 3 / 4, size.height / 3);
-    var secondEndPoint = new Offset(size.width, size.height / 5);
-    path.quadraticBezierTo(secondControlPoint.dx, secondControlPoint.dy,
-        secondEndPoint.dx, secondEndPoint.dy);
-
-    path.lineTo(size.width, 0.0);
-    path.lineTo(size.width, size.height);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
-    return false;
   }
 }
