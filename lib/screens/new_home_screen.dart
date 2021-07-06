@@ -1,3 +1,5 @@
+import 'package:clima/screens/new_city_screen.dart';
+import 'package:clima/services/weather.dart';
 import 'package:clima/utilities/beziercurve.dart';
 import 'package:clima/utilities/weather_component.dart';
 import 'package:flutter/material.dart';
@@ -163,17 +165,29 @@ class _NewHomeState extends State<NewHome> {
                         ],
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 50, bottom: 50),
+                        padding: const EdgeInsets.only(top: 35, bottom: 50),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            ElevatedButton(
-                                onPressed: () {},
-                                child: Icon(Icons.location_on)),
-                            ElevatedButton(
-                              onPressed: () {},
-                              child: Icon(Icons.search),
+                            BottomButton(
+                              icon: Icons.location_on,
+                              onPressed: () async {
+                                var locationData =
+                                    await WeatherModel().getLocationWeather();
+                                updateUI(weatherData: locationData);
+                              },
+                            ),
+                            BottomButton(
+                              icon: Icons.search,
+                              onPressed: () {
+                                var cityName = Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => NewCityScreen(),
+                                  ),
+                                );
+                              },
                             )
                           ],
                         ),
@@ -184,6 +198,29 @@ class _NewHomeState extends State<NewHome> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class BottomButton extends StatelessWidget {
+  final IconData icon;
+  final Function onPressed;
+
+  BottomButton({this.icon, this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      child: Icon(icon),
+      style: ElevatedButton.styleFrom(
+        primary: Color(0xFF212E50),
+        shape: new RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(30),
+          ),
         ),
       ),
     );
