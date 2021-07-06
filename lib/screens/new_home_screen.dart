@@ -181,10 +181,53 @@ class _NewHomeState extends State<NewHome> {
                             BottomButton(
                               icon: Icons.search,
                               onPressed: () {
-                                var cityName = Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => NewCityScreen(),
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  builder: (context) => SingleChildScrollView(
+                                    child: Container(
+                                      padding: EdgeInsets.only(
+                                        bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom,
+                                      ),
+                                      child: NewCityScreen(
+                                          updateUI: (dynamic weatherData) {
+                                        setState(() {
+                                          if (weatherData == null) {
+                                            temperature = 0;
+                                            condition = '';
+                                            cityName = '';
+                                            countryCode = '';
+                                            wind = 0;
+                                            humidity = 0;
+                                            pressure = 0;
+                                          } else {
+                                            temperature = double.parse(
+                                                weatherData['main']['temp']
+                                                    .toString());
+                                            condition = weatherData['weather']
+                                                    [0]['icon']
+                                                .toString();
+                                            cityName =
+                                                weatherData['name'].toString();
+                                            countryCode = weatherData['sys']
+                                                    ['country']
+                                                .toString();
+                                            wind = weatherData['wind']['speed']
+                                                .toInt();
+                                            humidity = weatherData['main']
+                                                    ['humidity']
+                                                .toInt();
+                                            pressure = weatherData['main']
+                                                    ['pressure']
+                                                .toInt();
+                                            weatherIcon =
+                                                updateWeatherIcon(condition);
+                                          }
+                                        });
+                                      }),
+                                    ),
                                   ),
                                 );
                               },
@@ -226,3 +269,11 @@ class BottomButton extends StatelessWidget {
     );
   }
 }
+
+
+//  var cityName = Navigator.push(
+//                                   context,
+//                                   MaterialPageRoute(
+//                                     builder: (context) => NewCityScreen(),
+//                                   ),
+//                                 );

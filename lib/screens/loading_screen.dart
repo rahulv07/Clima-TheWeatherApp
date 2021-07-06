@@ -1,4 +1,3 @@
-import 'package:clima/screens/location_screen.dart';
 import 'package:clima/screens/new_home_screen.dart';
 import 'package:clima/services/weather.dart';
 import 'package:flutter/material.dart';
