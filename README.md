@@ -23,7 +23,8 @@ A weather application made using Flutter
   </table>
   
   ## How to Download
-  1. Download the apk file in your mobile - [Clima.apk]()
+  1. Download the apk file in your mobile - [Clima.apk](https://drive.google.com/file/d/19Q_1pqd4WoVdUHBWAjr1fsM-AGAqoEnC/view?usp=sharing)
   2. Click the downloaded apk file in your mobile.
+  3. Make sure to **turn on** your **Location** in your mobile phone.
 
 
