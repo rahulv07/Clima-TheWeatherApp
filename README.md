@@ -27,4 +27,7 @@ A weather application made using Flutter.
   2. Click the downloaded apk file in your mobile.
   3. Make sure to **turn on** your **Location** in your mobile phone.
 
+## Icon Credits
+<div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+
 
