@@ -3,9 +3,9 @@ A weather application made using Flutter.
 
 ## Features:
 - Displays the weather data of current location.
-- Able to display the **temperature, wind speed, humidity, atmospheric pressure**.
+- Able to display the **temperature, wind speed, humidity, and atmospheric pressure**.
 - Displays a picture that matches the current weather of the location.
-- Able to search various cities around the world and display the weather data those cities.
+- Able to search various cities around the world and display the weather data of those cities.
 
 
 ## Screenshots
